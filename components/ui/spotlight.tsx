@@ -7,20 +7,12 @@ type SpotlightProps = {
   className?: string;
   size?: number;
   springOptions?: SpringOptions;
-  fromColor?: string; // Added for custom gradient start
-  viaColor?: string;  // Added for custom gradient middle
-  toColor?: string;   // Added for custom gradient end
-  initialOpacity?: number; // Added to control initial visibility
 };
 
-export function Spotlight({
+export  function Spotlight({
   className,
   size = 200,
   springOptions = { bounce: 0 },
-  fromColor = 'gray-300', // Default to a more visible color
-  viaColor = 'gray-200',
-  toColor = 'gray-100',
-  initialOpacity = 0.5, // Start with some visibility
 }: SpotlightProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -63,7 +55,9 @@ export function Spotlight({
     return () => {
       parentElement.removeEventListener('mousemove', handleMouseMove);
       parentElement.removeEventListener('mouseenter', () => setIsHovered(true));
-      parentElement.removeEventListener('mouseleave', () => setIsHovered(false));
+      parentElement.removeEventListener('mouseleave', () =>
+        setIsHovered(false)
+      );
     };
   }, [parentElement, handleMouseMove]);
 
@@ -72,7 +66,8 @@ export function Spotlight({
       ref={containerRef}
       className={cn(
         'pointer-events-none absolute rounded-full bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops),transparent_80%)] blur-xl transition-opacity duration-200',
-        `from-${fromColor} via-${viaColor} to-${toColor}`, // Dynamic gradient colors
+        'from-zinc-50 via-zinc-100 to-zinc-200',
+        isHovered ? 'opacity-100' : 'opacity-0',
         className
       )}
       style={{
@@ -80,7 +75,6 @@ export function Spotlight({
         height: size,
         left: spotlightLeft,
         top: spotlightTop,
-        opacity: isHovered ? 1 : initialOpacity, // Use initialOpacity when not hovered
       }}
     />
   );
